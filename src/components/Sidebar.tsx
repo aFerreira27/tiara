@@ -581,7 +581,7 @@ export default function Sidebar() {
           
           <div className="px-1">
             <button 
-              onClick={() => signOut()} 
+              onClick={() => signOut({ callbackUrl: '/' })} 
               className="relative flex cursor-pointer select-none items-center gap-3 rounded-md px-3 py-2.5 text-sm outline-none transition-colors hover:bg-red-50 dark:hover:bg-red-900/20 w-full text-left text-red-600 dark:text-red-400 font-medium"
             >
               <div className="text-red-500 dark:text-red-400">

@@ -17,5 +17,5 @@ export default withAuth(
 )
 
 export const config = {
-  matcher: ["/dashboard", "/krowne-base", "/krowne-link", "/krowne-sync", "/spec-sheet-generator", "/((?!api/auth).*)"], // Protect only the /dashboard route
+  matcher: ["/dashboard", "/krowne-base", "/krowne-link", "/krowne-sync", "/spec-sheet-generator"],
 }
