@@ -31,7 +31,8 @@ export default function DashboardPage() {
       <Sidebar />
       <div className="flex-1 p-6">
         <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-        <p>Welcome, {session.user.name}!</p>
+        <p>Welcome, {session?.user?.name ?? 'Guest'}!</p>
+
         {/* Display other dashboard content */}
       </div>
     </div>

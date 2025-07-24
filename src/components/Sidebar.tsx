@@ -1,5 +1,5 @@
 'use client';
-
+import type { Session } from 'next-auth';
 import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -15,7 +15,7 @@ const SettingsIcon = () => <span className="mr-2 inline-block w-4 h-4 bg-green-5
 const XIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>;
 
 // Define the PopoverTrigger component
-const PopoverTrigger = React.forwardRef<any, {
+const PopoverTrigger = React.forwardRef<HTMLButtonElement, {
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   togglePopover: (event?: React.MouseEvent<HTMLButtonElement>) => void;
   children: React.ReactNode;
@@ -77,7 +77,7 @@ const Overlay = ({ isOpen, onClose, title, children }: {
 };
 
 // Profile Overlay Content
-const ProfileContent = ({ session }: { session: any }) => (
+const ProfileContent = ({ session }: { session: Session | null }) => (
   <div className="space-y-4">
     <div className="flex items-center space-x-4">
       {session?.user?.image && (
@@ -389,7 +389,7 @@ const SupportContent = () => {
             <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
               <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Need more help?</h4>
               <p className="text-sm text-blue-700 dark:text-blue-200 mb-3">
-                Can't find what you're looking for? Our support team is here to help.
+                Can&apos;t find what you&apos;re looking for? Our support team is here to help.
               </p>
               <button className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
                 Contact Support →
