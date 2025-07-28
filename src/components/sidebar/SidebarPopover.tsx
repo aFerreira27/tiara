@@ -26,7 +26,7 @@ const SidebarPopover: React.FC<SidebarPopoverProps> = ({
         transform: 'translateY(-100%)' // Position above the button
       }}
     >
-      <div className="px-1">
+      <div className="px-1 space-y-1">
         <button 
           onClick={(e) => {
             e.preventDefault();

@@ -16,10 +16,10 @@ const ProfileOverlayContent = ({ session }: { session: Session | null }) => (
         />
       )}
       <div>
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+        <h3 className="text-lg font-medium text-gray-950 dark:text-gray-50">
           {session?.user?.name || 'User'}
         </h3>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-gray-700 dark:text-gray-200">
           {session?.user?.email || 'No email available'}
         </p>
       </div>
@@ -29,11 +29,11 @@ const ProfileOverlayContent = ({ session }: { session: Session | null }) => (
       <div className="space-y-3">
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
-          <p className="mt-1 text-sm text-gray-900 dark:text-white">{session?.user?.name || 'N/A'}</p>
+          <p className="mt-1 text-sm text-gray-950 dark:text-gray-50">{session?.user?.name || 'N/A'}</p>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-          <p className="mt-1 text-sm text-gray-900 dark:text-white">{session?.user?.email || 'N/A'}</p>
+          <p className="mt-1 text-sm text-gray-950 dark:text-gray-50">{session?.user?.email || 'N/A'}</p>
         </div>
       </div>
     </div>

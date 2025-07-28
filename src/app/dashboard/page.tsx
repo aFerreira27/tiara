@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import Sidebar from '../../components/sidebar/Sidebar';
+import AppLayout from '../../components/layout/AppLayout';
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -27,14 +27,13 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex h-screen">
-      <Sidebar />
+    <AppLayout>
       <div className="flex-1 p-6">
         <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
         <p>Welcome, {session?.user?.name ?? 'Guest'}!</p>
 
         {/* Display other dashboard content */}
       </div>
-    </div>
+    </AppLayout>
   );
 }

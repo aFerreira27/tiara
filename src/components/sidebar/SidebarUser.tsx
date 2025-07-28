@@ -35,7 +35,7 @@ const SidebarUser = ({ togglePopover }: { togglePopover: (event?: React.MouseEve
     <div className="p-4 border-t border-gray-200 dark:border-gray-700">
       <PopoverTrigger 
         togglePopover={togglePopover}
-        className="w-full text-left flex items-center text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-gray-700 py-2 px-3 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+        className="w-full text-left flex items-center text-black dark:text-gray-200 bg-gray-200 dark:bg-gray-700 py-2 px-3 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
       >
         {session?.user ? (
           <>
@@ -49,14 +49,14 @@ const SidebarUser = ({ togglePopover }: { togglePopover: (event?: React.MouseEve
               />
             )}
             <div className="flex flex-col flex-1 leading-tight">
-              <p className="text-sm font-medium">{session.user.name || 'User'}</p>
-              {session.user.email && <p className="text-xs text-gray-500 dark:text-gray-400">{session.user.email}</p>}
+              <p className="text-sm font-medium" style={{ color: 'black' }}>{session.user.name || 'User'}</p>
+              {session.user.email && <p className="text-xs" style={{ color: 'black' }}>{session.user.email}</p>}
             </div>
           </>
         ) : (
           <div className="flex items-center">
             <SettingsIcon className="w-5 h-5 mr-3" />
-            <span className="text-sm font-medium">Loading user...</span>
+            <span className="text-sm font-medium" style={{ color: 'black' }}>Loading user...</span>
           </div>
         )}
       </PopoverTrigger>

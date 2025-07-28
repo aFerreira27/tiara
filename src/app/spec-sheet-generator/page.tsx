@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import Sidebar from '../../components/sidebar/Sidebar';
+import AppLayout from '../../components/layout/AppLayout';
 
 export default function SpecSheetGenerator() {
   const { data: session, status } = useSession();
@@ -27,9 +27,11 @@ export default function SpecSheetGenerator() {
   }
 
   return (
-    <div className="flex h-screen">
-      <Sidebar />
-      <h1>Spec Sheet Generator</h1>
-    </div>
+    <AppLayout>
+      <div>
+        <h1>Spec Sheet Generator</h1>
+        {/* Add your spec sheet generator components here */}
+      </div>
+    </AppLayout>
   );
 }

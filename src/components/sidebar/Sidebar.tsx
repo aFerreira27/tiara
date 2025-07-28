@@ -10,9 +10,13 @@ import Overlay from './overlay/Overlay';
 import ProfileOverlayContent from './overlay/ProfileOverlayContent';
 import ConnectionsOverlayContent from './overlay/ConnectionsOverlayContent';
 import SupportOverlayContent from './overlay/SupportOverlayContent';
+import { Session } from 'next-auth';
 
-export default function Sidebar() {
-  const { data: session } = useSession();
+interface SidebarProps {
+  session: Session | null;
+}
+
+export default function Sidebar({ session }: SidebarProps) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [activeOverlay, setActiveOverlay] = useState<string | null>(null);
   const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 });

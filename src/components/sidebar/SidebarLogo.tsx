@@ -6,13 +6,13 @@ import React from 'react';
 const SidebarLogo = () => {
   return (
     <Link href="/dashboard">
-      <div className="flex items-center justify-center mb-4">
+      <div className="flex items-center justify-center mb-4 w-full">
          <Image 
           src="/tiaraLogo.svg" 
           alt="Tiara Logo" 
           width={150} 
           height={150} 
-          className="h-auto" 
+          className="h-auto w-full object-contain" 
         />
       </div>
     </Link>
