@@ -6,10 +6,10 @@ import SidebarLogo from './SidebarLogo';
 import SidebarNavigation from './SidebarNavigation';
 import SidebarUser from './SidebarUser';
 import SidebarPopover from './SidebarPopover';
-import Overlay from './Overlay';
-import ProfileOverlayContent from './ProfileOverlayContent';
-import ConnectionsOverlayContent from './ConnectionsOverlayContent';
-import SupportOverlayContent from './SupportOverlayContent';
+import Overlay from './overlay/Overlay';
+import ProfileOverlayContent from './overlay/ProfileOverlayContent';
+import ConnectionsOverlayContent from './overlay/ConnectionsOverlayContent';
+import SupportOverlayContent from './overlay/SupportOverlayContent';
 
 export default function Sidebar() {
   const { data: session } = useSession();

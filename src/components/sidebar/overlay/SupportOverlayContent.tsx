@@ -186,4 +186,8 @@ const SupportOverlayContent = () => {
           </div>
         )}
       </div>
-    
+    </div>
+  );
+};
+
+export default SupportOverlayContent;

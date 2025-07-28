@@ -3,9 +3,9 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import Sidebar from '../../components/Sidebar';
+import Sidebar from '../../components/sidebar/Sidebar';
 
-export default function KrowneLink() {
+export default function KrowneLens() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -29,7 +29,7 @@ export default function KrowneLink() {
   return (
     <div className="flex h-screen">
       <Sidebar />
-      <h1>Krowne Link</h1>
+      <h1>Krowne Lens</h1>
     </div>
   );
 }
