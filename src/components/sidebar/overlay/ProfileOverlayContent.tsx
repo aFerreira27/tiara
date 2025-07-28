@@ -1,9 +1,17 @@
 'use client';
-import type { Session } from 'next-auth';
-import Image from 'next/image';
-import React from 'react';
 
-const ProfileOverlayContent = ({ session }: { session: Session | null }) => (
+import { Session } from "next-auth";
+import Image from "next/image";
+
+interface ProfileOverlayContentProps {
+  session: Session | null;
+  onClose: () => void;
+}
+
+const ProfileOverlayContent = ({
+  session,
+  onClose
+}: ProfileOverlayContentProps) => (
   <div className="space-y-4">
     <div className="flex items-center space-x-4">
       {session?.user?.image && (
@@ -24,23 +32,38 @@ const ProfileOverlayContent = ({ session }: { session: Session | null }) => (
         </p>
       </div>
     </div>
-    
+
     <div className="border-t border-gray-200 dark:border-gray-600 pt-4">
       <div className="space-y-3">
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
-          <p className="mt-1 text-sm text-gray-950 dark:text-gray-50">{session?.user?.name || 'N/A'}</p>
+          <input
+            type="text"
+            value={session?.user?.name || ''}
+            disabled
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+          />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-          <p className="mt-1 text-sm text-gray-950 dark:text-gray-50">{session?.user?.email || 'N/A'}</p>
+          <input
+            type="text"
+            value={session?.user?.email || ''}
+            disabled
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+          />
         </div>
       </div>
     </div>
-    
-    <div className="flex justify-end pt-4">
-      <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-        Edit Profile
+
+    {/* You can add more profile information or actions here */}
+
+    <div className="flex justify-end">
+      <button
+        onClick={onClose}
+        className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+      >
+        Close
       </button>
     </div>
   </div>

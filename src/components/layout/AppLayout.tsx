@@ -1,8 +1,8 @@
+"use client";
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Sidebar from '../sidebar/Sidebar';
-import { Session } from 'next-auth';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -11,7 +11,6 @@ interface AppLayoutProps {
 export default function AppLayout({ children }: AppLayoutProps) {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // State to manage sidebar visibility
 
   useEffect(() => {
     if (status === 'loading') {
@@ -33,7 +32,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Pass session to Sidebar */}
-      <Sidebar session={session} />
+      <Sidebar />
       
       {/* Main content area */}
       <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900 pt-16 pl-64">

@@ -6,7 +6,13 @@ runConfig:
   # concurrency: 80
   # cpu: 1
   # memoryMiB: 512
-
+  sidecars:
+    - name: cloudsql-proxy
+      image: gcr.io/cloud-sql-connectors/cloud-sql-proxy
+      command: ["/cloud-sql-proxy"]
+      args:
+        - "tiara-269e6:us-central1:tiarasql"
+        - "--port=5432"
 # Environment variables and secrets.
 env:
   # Configure environment variables.
@@ -30,3 +36,5 @@ env:
     secret: azureAdTenantId
   - variable: NEXTAUTH_SECRET
     secret: nextauth_secret
+  - variable: TIARAADMINPASS
+    secret: tiaraadminpass

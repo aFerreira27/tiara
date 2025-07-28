@@ -1,0 +1,52 @@
+graphql
+query ListProducts {
+  products {
+    name
+    sku
+    imageUrl
+    series {
+      name
+    }
+    tags {
+      tag {
+        name
+      }
+    }
+  }
+}
+
+query GetProductBySku($sku: String!) {
+  product(sku: $sku) {
+    name
+    sku
+    description
+    standardFeatures
+    complianceInfo
+    images {
+      url
+      altText
+      isPrimary
+      displayOrder
+    }
+    specifications {
+      key
+      value
+      unit
+      displayOrder
+    }
+    files {
+      url
+      filename
+      fileType
+      description
+    }
+    series {
+      name
+    }
+    tags {
+      tag {
+        name
+      }
+    }
+  }
+}

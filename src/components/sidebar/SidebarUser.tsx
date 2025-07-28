@@ -1,67 +1,36 @@
-'use client';
-import type { Session } from 'next-auth';
-import { useSession } from 'next-auth/react';
-import Image from 'next/image';
-import React from 'react';
-import { SettingsIcon } from 'lucide-react';
+import { Session } from "next-auth";
+import Image from "next/image";
 
-// Define the PopoverTrigger component (can be moved to a separate utility if reused)
-const PopoverTrigger = React.forwardRef<HTMLButtonElement, {
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  togglePopover: (event?: React.MouseEvent<HTMLButtonElement>) => void;
-  children: React.ReactNode;
-  className?: string;
-}>(({ className, onClick, togglePopover, children, ...props }, ref) => {
-  return (
-    <button
-      ref={ref}
-      className={className}
-      onClick={(event) => {
-        onClick?.(event);
-        togglePopover(event);
-      }}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-});
-PopoverTrigger.displayName = "PopoverTrigger";
+interface SidebarUserProps {
+  session: Session | null;
+  onOpenPopover: (event: React.MouseEvent<HTMLDivElement>) => void;
+}
 
-const SidebarUser = ({ togglePopover }: { togglePopover: (event?: React.MouseEvent<HTMLButtonElement>) => void }) => {
-  const { data: session } = useSession();
+export default function SidebarUser({
+  session,
+  onOpenPopover,
+}: SidebarUserProps) {
+  if (!session) {
+    return null;
+  }
 
   return (
-    <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-      <PopoverTrigger 
-        togglePopover={togglePopover}
-        className="w-full text-left flex items-center text-black dark:text-gray-200 bg-gray-200 dark:bg-gray-700 py-2 px-3 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-      >
-        {session?.user ? (
-          <>
-            {session.user.image && (
-              <Image
-                src={session.user.image}
-                alt={session.user.name || 'User'}
-                width={32}
-                height={32}
-                className="rounded-full mr-3"
-              />
-            )}
-            <div className="flex flex-col flex-1 leading-tight">
-              <p className="text-sm font-medium" style={{ color: 'black' }}>{session.user.name || 'User'}</p>
-              {session.user.email && <p className="text-xs" style={{ color: 'black' }}>{session.user.email}</p>}
-            </div>
-          </>
-        ) : (
-          <div className="flex items-center">
-            <SettingsIcon className="w-5 h-5 mr-3" />
-            <span className="text-sm font-medium" style={{ color: 'black' }}>Loading user...</span>
-          </div>
-        )}
-      </PopoverTrigger>
+    <div className="flex items-center space-x-3 cursor-pointer" onClick={onOpenPopover}>
+      <Image
+        className="h-8 w-8 rounded-full"
+        src={session.user?.image || '/default-avatar.png'} // Use a default image if none is provided
+        alt="User avatar"
+        width={32}
+        height={32}
+      />
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+          {session.user?.name || 'User'}
+        </p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+          {session.user?.email || 'user@example.com'}
+        </p>
+      </div>
     </div>
   );
-};
-
-export default SidebarUser;
+}

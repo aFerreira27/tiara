@@ -1,7 +1,13 @@
 'use client';
 import React from 'react';
 
-const SupportOverlayContent = () => {
+interface SupportOverlayContentProps {
+  onClose: () => void;
+}
+
+const SupportOverlayContent = ({
+  onClose
+}: SupportOverlayContentProps) => {
   const [activeTab, setActiveTab] = React.useState('faq');
 
   const tabs = [
@@ -13,10 +19,10 @@ const SupportOverlayContent = () => {
   const faqItems = [
     {
       question: "How do I connect my Salesforce account?",
-      answer: "Go to Connections and click 'Connect' next to Salesforce. You'll be redirected to authenticate with your Salesforce credentials."
+      answer: "Go to Connections and click 'Connect' next to Salesforce. You&apos;ll be redirected to authenticate with your Salesforce credentials."
     },
     {
-      question: "Why isn't my data syncing?",
+      question: "Why isn&apos;t my data syncing?",
       answer: "Check your connection status in the Connections tab. If connected, try refreshing the sync or contact support."
     },
     {
@@ -25,7 +31,7 @@ const SupportOverlayContent = () => {
     },
     {
       question: "Can I export my data?",
-      answer: "Yes, most data can be exported to CSV or PDF format from the respective module's export options."
+      answer: "Yes, most data can be exported to CSV or PDF format from the respective module&apos;s export options."
     }
   ];
 
@@ -81,7 +87,7 @@ const SupportOverlayContent = () => {
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Help us improve by reporting any issues you encounter.
             </p>
-            
+
             <form className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -96,30 +102,30 @@ const SupportOverlayContent = () => {
                   <option>Other</option>
                 </select>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Description
                 </label>
-                <textarea 
+                <textarea
                   rows={4}
                   placeholder="Please describe the issue in detail..."
                   className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 ></textarea>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Steps to Reproduce
                 </label>
-                <textarea 
+                <textarea
                   rows={3}
                   placeholder="1. Go to... 2. Click on... 3. Expected vs actual result..."
                   className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 ></textarea>
               </div>
-              
-              <button 
+
+              <button
                 type="submit"
                 className="w-full px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors"
               >
@@ -135,7 +141,7 @@ const SupportOverlayContent = () => {
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Access comprehensive guides and documentation for all features.
             </p>
-            
+
             <div className="space-y-3">
               <a href="#" className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group">
                 <div className="text-blue-600 dark:text-blue-400">📖</div>
@@ -145,7 +151,7 @@ const SupportOverlayContent = () => {
                 </div>
                 <div className="text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300">→</div>
               </a>
-              
+
               <a href="#" className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group">
                 <div className="text-green-600 dark:text-green-400">🔗</div>
                 <div className="flex-1">
@@ -154,7 +160,7 @@ const SupportOverlayContent = () => {
                 </div>
                 <div className="text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300">→</div>
               </a>
-              
+
               <a href="#" className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group">
                 <div className="text-purple-600 dark:text-purple-400">⚙️</div>
                 <div className="flex-1">
@@ -163,7 +169,7 @@ const SupportOverlayContent = () => {
                 </div>
                 <div className="text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300">→</div>
               </a>
-              
+
               <a href="#" className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group">
                 <div className="text-orange-600 dark:text-orange-400">🎥</div>
                 <div className="flex-1">
@@ -173,11 +179,11 @@ const SupportOverlayContent = () => {
                 <div className="text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300">→</div>
               </a>
             </div>
-            
+
             <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
               <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Need more help?</h4>
               <p className="text-sm text-blue-700 dark:text-blue-200 mb-3">
-                Can't find what you're looking for? Our support team is here to help.
+                Can&apos;t find what you&apos;re looking for? Our support team is here to help.
               </p>
               <button className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
                 Contact Support →
@@ -185,6 +191,15 @@ const SupportOverlayContent = () => {
             </div>
           </div>
         )}
+      </div>
+
+      <div className="flex justify-end">
+        <button
+          onClick={onClose}
+          className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
+          Close
+        </button>
       </div>
     </div>
   );

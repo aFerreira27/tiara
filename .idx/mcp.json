@@ -8,5 +8,10 @@
                 "experimental:mcp"
             ]
         }
+    },
+    "dataConnect": {
+        "cloudsql": {
+            "postgres": {}
+        }
     }
 }

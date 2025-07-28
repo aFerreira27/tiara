@@ -1,0 +1,59 @@
+type Product @table {
+  name: String!
+  sku: String!
+  description: String
+  standardFeatures: String
+  complianceInfo: String
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  series: Series
+}
+
+type Series @table {
+  name: String!
+  description: String
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+}
+
+type ProductImage @table {
+  url: String!
+  altText: String
+  isPrimary: Boolean
+  displayOrder: Int
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  product: Product!
+}
+
+type ProductSpecification @table {
+  key: String!
+  value: String!
+  unit: String
+  displayOrder: Int
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  product: Product!
+}
+
+type ProductFile @table {
+  url: String!
+  filename: String!
+  fileType: String!
+  description: String
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  product: Product!
+}
+
+type Tag @table {
+  name: String!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+}
+
+type ProductTag @table(key: ["product", "tag"]) {
+  product: Product!
+  tag: Tag!
+  createdAt: Timestamp!
+}
