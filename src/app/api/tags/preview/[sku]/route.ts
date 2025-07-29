@@ -1,8 +1,10 @@
 import { previewProductTags } from '../../../../../../lib/product-tagging';
 
-export async function GET(request: Request, { params }: { params: { sku: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ sku: string }> }) {
   try {
-    const tags = await previewProductTags(params.sku);
+    // Await params before accessing its properties
+    const { sku } = await params;
+    const tags = await previewProductTags(sku);
     return new Response(JSON.stringify({ tags }), { status: 200 });
   } catch (error) {
     console.error('Error previewing tags:', error);

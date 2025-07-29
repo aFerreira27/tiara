@@ -1,20 +1,31 @@
-// src/app/krowne-base/[sku]/page.tsx
-
-import { notFound } from 'next/navigation';
-import ProductDetail from '../../../components/krownebase/ProductDetail';
-import { getProducts } from '../../../../lib/product-db'; // Importing getProducts
+import { notFound, useRouter } from 'next/navigation'; // Import useRouter
+import AppLayout from '@/components/layout/AppLayout';
+import ProductDetail from '@/components/krownebase/ProductDetail';
+import { Product } from '../../../../types/product';
 
 interface ProductDetailPageProps {
-  params: { 
-    sku: string; 
-  };
+  params: { sku: string };
 }
 
-const ProductDetailPage = async ({ params }: ProductDetailPageProps) => {
+const ProductDetailPage = async ({
+  params,
+}: ProductDetailPageProps) => {
   const { sku } = params;
+  const router = useRouter(); // Initialize useRouter
 
-  // Fetch product data based on SKU
-  const products = await getProducts(sku);
+  // In a real application, you would fetch product data from a database
+  // based on the SKU. Here, we'll use a placeholder.
+
+  // Placeholder data - replace with your actual data fetching logic
+  const products: Product[] = [
+    // Your product data here (e.g., fetched from an API or database)
+    // Example:
+    // { sku: 'SKU123', name: 'Product 1', description: 'Description 1' },
+    // { sku: 'SKU456', name: 'Product 2', description: 'Description 2' },
+  ];
+
+  // Filter products to find the one with the matching SKU
+  const productData = products.filter(p => p.sku === sku);
 
   // If product not found (array is empty), show 404 page
   if (!products || products.length === 0) {
@@ -22,13 +33,19 @@ const ProductDetailPage = async ({ params }: ProductDetailPageProps) => {
   }
 
   // Get the first product from the returned array
-  const productData = products[0];
+  const product = products[0];
+
+  // Define the onClose function to navigate back
+  const handleCloseDetail = () => {
+    router.back(); // Navigate back to the previous page
+  };
 
   return (
-    <div>
-      {/* You might want to add a layout or wrapper here if needed */}
-      <ProductDetail productData={productData} />
-    </div>
+    <AppLayout>
+      <div>
+        <ProductDetail product={product} onClose={handleCloseDetail} /> {/* Pass the onClose prop */}
+      </div>
+    </AppLayout>
   );
 };
 

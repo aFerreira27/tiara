@@ -1,174 +1,118 @@
-'use client'; // Revert to Client Component
+'use client';
 
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState, ChangeEvent } from 'react'; // Import ChangeEvent
-import AppLayout from '../../components/layout/AppLayout';
-import SearchBar from '../../components/krownebase/SearchBar';
-import ProductCard from '../../components/krownebase/ProductCard';
-import AddProductOverlay from '../../components/krownebase/AddProductOverlay';
-import { Product } from '../../../types/product'; // Import the Product interface from types
+import { useState, useEffect, ChangeEvent } from 'react'; // Import ChangeEvent
+import { Product } from '../../../types/product'; // Import the Product type with correct relative path
+import AppLayout from '@/components/layout/AppLayout';
+import SearchBar from '@/components/krownebase/SearchBar';
+import ProductCard from '@/components/krownebase/ProductCard';
+import ProductDetail from '@/components/krownebase/ProductDetail';
+import AddProductOverlay from '@/components/krownebase/AddProductOverlay';
 
-export default function KrowneBase() { // Remove async
-  const { data: session, status } = useSession();
-  const router = useRouter();
+export default function KrowneBase() {
+  const [products, setProducts] = useState<Product[]>([]); // Use Product[] for state type
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]); // Use Product[] for state type
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null); // Use Product | null for state type
+  const [isAddOverlayOpen, setIsAddOverlayOpen] = useState(false);
 
-  const [isOverlayOpen, setIsOverlayOpen] = useState(false);
-  const [products, setProducts] = useState<Product[]>([]); // Use Product[] type
-  const [searchTerm, setSearchTerm] = useState(''); // State for search term
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]); // Use Product[] type
-  const [isTagging, setIsTagging] = useState(false);
-
-  // Fetch product data when the component mounts
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/api/products');
-        if (!response.ok) {
-          throw new Error(`Error fetching products: ${response.statusText}`);
+        const res = await fetch('/api/products');
+        if (!res.ok) {
+          throw new Error(`Error fetching products: ${res.statusText}`);
         }
-        const allProducts = await response.json();
-        console.log('Fetched products:', allProducts); // Log fetched products
-        setProducts(allProducts);
-        setFilteredProducts(allProducts); // Initially show all products
+        const data: Product[] = await res.json(); // Explicitly type the fetched data
+        setProducts(data);
+        setFilteredProducts(data); // Initialize filtered products
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error('Failed to fetch products:', error);
       }
     };
-    fetchProducts();
-  }, []); // Empty dependency array to fetch only once on mount
 
-  // Filter products based on search term
+    fetchProducts();
+  }, []);
+
   useEffect(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     const filtered = products.filter((product: Product) => // Explicitly type product
       product.sku.toLowerCase().includes(lowerCaseSearchTerm) || // Use product.sku
-      product.product_description.toLowerCase().includes(lowerCaseSearchTerm) || // Search product description
+      product.product_description?.toLowerCase().includes(lowerCaseSearchTerm) || // Search product description with optional chaining
       (product.tags && product.tags.some(tag => tag.toLowerCase().includes(lowerCaseSearchTerm)))
       // Add other fields to search as needed based on your table columns
     );
-    console.log('Filtered products:', filtered); // Log filtered products
     setFilteredProducts(filtered);
   }, [searchTerm, products]);
 
-  useEffect(() => {
-    if (status === 'loading') {
-      return;
-    }
-    if (!session) {
-      router.push('/');
-    }
-  }, [session, status, router]);
-
-  if (status === 'loading') {
-    return <div>Loading...</div>;
-  }
-
-  if (!session) {
-    return null;
-  }
-
-  const handleOpenOverlay = () => {
-    setIsOverlayOpen(true);
+  const handleCardClick = (product: Product) => { // Explicitly type product
+    setSelectedProduct(product);
   };
 
-  const handleCloseOverlay = () => {
-    setIsOverlayOpen(false);
-    // Optionally re-fetch products after adding a new one
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch('/api/products');
-        if (!response.ok) {
-          throw new Error(`Error fetching products: ${response.statusText}`);
-        }
-        const allProducts = await response.json();
-        setProducts(allProducts);
-        setFilteredProducts(allProducts);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
-    fetchProducts();
+  const handleCloseDetail = () => {
+    setSelectedProduct(null);
   };
 
-  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => { // Explicitly type event
-    setSearchTerm(event.target.value);
+  const handleOpenAddOverlay = () => {
+    setIsAddOverlayOpen(true);
   };
 
-  const handleGenerateTags = async () => {
-    setIsTagging(true);
+  const handleCloseAddOverlay = () => {
+    setIsAddOverlayOpen(false);
+  };
+
+  const handleAddProduct = async (newProduct: Product) => { // Explicitly type newProduct
     try {
-      // Call the API endpoint instead of directly calling the function
-      const response = await fetch('/api/tags', {
+      const res = await fetch('/api/products', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify(newProduct),
       });
-
-      if (!response.ok) {
-        throw new Error(`Failed to generate tags: ${response.statusText}`);
+      if (!res.ok) {
+        throw new Error(`Error adding product: ${res.statusText}`);
       }
-
-      const result = await response.json();
-      console.log('Tagging result:', result);
-
-      // Re-fetch products to show updated tags
-      const fetchProducts = async () => {
-        try {
-          const response = await fetch('/api/products');
-          if (!response.ok) {
-            throw new Error(`Error fetching products: ${response.statusText}`);
-          }
-          const allProducts = await response.json();
-          setProducts(allProducts);
-          setFilteredProducts(allProducts);
-        } catch (error) {
-          console.error('Error fetching products:', error);
-        }
-      };
-      await fetchProducts();
-      
-      // Optional: Show success message to user
-      alert('Tags generated successfully!');
+      const addedProduct: Product = await res.json(); // Explicitly type the added product
+      setProducts([...products, addedProduct]);
+      setFilteredProducts([...filteredProducts, addedProduct]); // Update filtered list as well
     } catch (error) {
-      console.error('Error generating tags:', error);
-      // Optional: Show error message to user
-      alert('Error generating tags. Please try again.');
-    } finally {
-      setIsTagging(false);
+      console.error('Failed to add product:', error);
     }
+  };
+
+  const handleSearchInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
   };
 
   return (
     <AppLayout>
-      <div className="flex flex-col h-full">
-        <h1 className="text-2xl font-bold mb-6">Krowne Base</h1>
-        <div className="flex justify-between items-center mb-6">
-          <SearchBar onSearchChange={handleSearchChange} />
-          <div className="flex gap-4">
-            <button
-              onClick={handleGenerateTags}
-              disabled={isTagging}
-              className={`px-4 py-2 rounded text-white ${isTagging ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`}
-            >
-              {isTagging ? 'Generating Tags...' : 'Generate Tags'}
-            </button>
-            <button
-              onClick={handleOpenOverlay}
-              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-            >
-              Add Product
-            </button>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 overflow-y-auto pr-2">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.sku} product={product} /> // Use product.sku for key
-          ))}
-        </div>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-semibold">Krowne Base</h1>
+        <button
+          onClick={handleOpenAddOverlay}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Add New Product
+        </button>
       </div>
-      <AddProductOverlay isOpen={isOverlayOpen} onClose={handleCloseOverlay} />
+      <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchInputChange} />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+        {filteredProducts.map((product) => (
+          <ProductCard key={product.sku} product={product} onClick={() => handleCardClick(product)} />
+        ))}
+      </div>
+
+      {selectedProduct && (
+        <ProductDetail product={selectedProduct} onClose={handleCloseDetail} />
+      )}
+
+      {isAddOverlayOpen && (
+        <AddProductOverlay
+          isOpen={isAddOverlayOpen}
+          onClose={handleCloseAddOverlay}
+          onAddProduct={handleAddProduct}
+        />
+      )}
     </AppLayout>
   );
 }
