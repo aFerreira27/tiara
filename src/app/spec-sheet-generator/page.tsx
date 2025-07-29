@@ -7,6 +7,8 @@ import { Search, Download, FileText, Package, Loader2, AlertCircle } from 'lucid
 import { Product } from '../../../types/product';
 import AppLayout from '@/components/layout/AppLayout';
 import { formatProductData, FormattedProduct } from '../../../lib/product-formatter';
+import { generateSpecSheetPDF } from '../../../lib/spec-sheet-pdf';
+import pdfMake from 'pdfmake/build/pdfmake';
 
 // Function to search for a product by SKU
 const searchProductBySKU = async (sku: string): Promise<Product | null> => {
@@ -28,7 +30,8 @@ export default function SpecSheetGenerator() {
   const [isSearching, setIsSearching] = useState(false);
   const [product, setProduct] = useState<FormattedProduct | null>(null);
   const [error, setError] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingHTML, setIsGeneratingHTML] = useState(false);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   useEffect(() => {
     if (status === 'loading') {
@@ -70,24 +73,40 @@ export default function SpecSheetGenerator() {
     }
   };
 
-  const generateSpecSheet = async () => {
-    setIsGenerating(true);
-    // Simulate PDF generation delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+  const generateHTMLSpecSheet = async () => {
+    if (!product) return;
+    setIsGeneratingHTML(true);
     
-    // In a real implementation, you would generate and download the PDF here
-    const specSheetContent = generateSpecSheetHTML(product!);
+    // Simulate HTML generation delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    const specSheetContent = generateSpecSheetHTML(product);
     const blob = new Blob([specSheetContent], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `spec-sheet-${product!.sku}.html`;
+    a.download = `spec-sheet-${product.sku}.html`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     
-    setIsGenerating(false);
+    setIsGeneratingHTML(false);
+  };
+
+  const generatePDFSpecSheet = async () => {
+    if (!product) return;
+    setIsGeneratingPDF(true);
+
+    try {
+      const docDefinition = generateSpecSheetPDF(product);
+      pdfMake.createPdf(docDefinition).download(`spec-sheet-${product.sku}.pdf`);
+    } catch (pdfError) {
+      console.error('Error generating PDF:', pdfError);
+      setError('Error generating PDF spec sheet. Please try again.');
+    } finally {
+      setIsGeneratingPDF(false);
+    }
   };
 
   const generateSpecSheetHTML = (product: FormattedProduct): string => {
@@ -233,22 +252,22 @@ export default function SpecSheetGenerator() {
 
   return (
     <AppLayout>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
         <div className="max-w-6xl mx-auto px-4 py-8">
           {/* Header */}
-          <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
             <div className="flex items-center space-x-3 mb-4">
-              <FileText className="h-8 w-8 text-blue-600" />
-              <h1 className="text-3xl font-bold text-gray-900">Spec Sheet Generator</h1>
+              <FileText className="h-8 w-8 text-blue-600 dark:text-blue-500" />
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Spec Sheet Generator</h1>
             </div>
-            <p className="text-gray-600">Search for products by SKU and generate professional specification sheets</p>
+            <p className="text-gray-600 dark:text-gray-400">Search for products by SKU and generate professional specification sheets</p>
           </div>
 
           {/* Search Section */}
-          <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
             <div className="flex items-center space-x-3 mb-4">
-              <Search className="h-5 w-5 text-gray-500" />
-              <h2 className="text-xl font-semibold text-gray-900">Product Search</h2>
+              <Search className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Product Search</h2>
             </div>
             
             <div className="flex space-x-4">
@@ -259,7 +278,7 @@ export default function SpecSheetGenerator() {
                   value={skuInput}
                   onChange={(e) => setSkuInput(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
               <button
@@ -282,64 +301,83 @@ export default function SpecSheetGenerator() {
             </div>
 
             {error && (
-              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-2">
+              <div className="mt-4 p-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-700 rounded-lg flex items-center space-x-2">
                 <AlertCircle className="h-5 w-5 text-red-500" />
-                <span className="text-red-700">{error}</span>
+                <span className="text-red-700 dark:text-red-300">{error}</span>
               </div>
             )}
           </div>
 
           {/* Product Details */}
           {product && (
-            <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
-                  <Package className="h-6 w-6 text-green-600" />
-                  <h2 className="text-2xl font-semibold text-gray-900">Product Details</h2>
+                  <Package className="h-6 w-6 text-green-600 dark:text-green-500" />
+                  <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Product Details</h2>
                 </div>
-                <button
-                  onClick={generateSpecSheet}
-                  disabled={isGenerating}
-                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
-                >
-                  {isGenerating ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>Generating...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Download className="h-4 w-4" />
-                      <span>Generate Spec Sheet</span>
-                    </>
-                  )}
-                </button>
+                <div className="flex space-x-4">
+                  <button
+                    onClick={generateHTMLSpecSheet}
+                    disabled={isGeneratingHTML}
+                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                  >
+                    {isGeneratingHTML ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>Generating HTML...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Download className="h-4 w-4" />
+                        <span>Generate HTML Spec Sheet</span>
+                      </>
+                    )}
+                  </button>
+                   <button
+                    onClick={generatePDFSpecSheet}
+                    disabled={isGeneratingPDF}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                  >
+                    {isGeneratingPDF ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>Generating PDF...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Download className="h-4 w-4" />
+                        <span>Generate PDF Spec Sheet</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Basic Information */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Basic Information</h3>
                   <div className="space-y-3">
-                    <div className="flex justify-between py-2 border-b border-gray-100">
-                      <span className="font-medium text-gray-600">SKU:</span>
+                    <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                      <span className="font-medium text-gray-600 dark:text-gray-400">SKU:</span>
                       <span className="font-mono">{product.sku}</span>
                     </div>
-                    <div className="flex justify-between py-2 border-b border-gray-100">
-                      <span className="font-medium text-gray-600">Family:</span>
+                    <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                      <span className="font-medium text-gray-600 dark:text-gray-400">Family:</span>
                       <span>{product.specifications.dimensionsAndWeight.length}</span>
                     </div>
-                    <div className="flex justify-between py-2 border-b border-gray-100">
-                      <span className="font-medium text-gray-600">Type:</span>
+                    <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                      <span className="font-medium text-gray-600 dark:text-gray-400">Type:</span>
                       <span>{product.specifications.dimensionsAndWeight.width}</span>
                     </div>
-                    <div className="flex justify-between py-2 border-b border-gray-100">
-                      <span className="font-medium text-gray-600">Series:</span>
+                    <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                      <span className="font-medium text-gray-600 dark:text-gray-400">Series:</span>
                       <span>{product.specifications.dimensionsAndWeight.height}</span>
                     </div>
-                    <div className="flex justify-between py-2 border-b border-gray-100">
-                    <span className="font-medium text-gray-600">Status:</span>
-                      <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-800 text-sm">
+                    <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                    <span className="font-medium text-gray-600 dark:text-gray-400">Status:</span>
+                      <span className="px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm">
                         {product.specifications.dimensionsAndWeight.depth}
                       </span>
                     </div>
@@ -348,22 +386,22 @@ export default function SpecSheetGenerator() {
 
                 {/* Dimensions */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Dimensions & Weight</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Dimensions & Weight</h3>
                   <div className="space-y-3">
-                    <div className="flex justify-between py-2 border-b border-gray-100">
-                      <span className="font-medium text-gray-600">Length:</span>
+                    <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                      <span className="font-medium text-gray-600 dark:text-gray-400">Length:</span>
                       <span>{product.specifications.dimensionsAndWeight.productWeightLbs}"</span>
                     </div>
-                    <div className="flex justify-between py-2 border-b border-gray-100">
-                      <span className="font-medium text-gray-600">Width:</span>
+                    <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                      <span className="font-medium text-gray-600 dark:text-gray-400">Width:</span>
                       <span>{product.specifications.dimensionsAndWeight.shippingWeightLbs}"</span>
                     </div>
-                    <div className="flex justify-between py-2 border-b border-gray-100">
-                      <span className="font-medium text-gray-600">Height:</span>
+                    <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                      <span className="font-medium text-gray-600 dark:text-gray-400">Height:</span>
                       <span>{product.specifications.dimensionsAndWeight.shippingDimensions}"</span>
                     </div>
-                    <div className="flex justify-between py-2 border-b border-gray-100">
-                      <span className="font-medium text-gray-600">Weight:</span>
+                    <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                      <span className="font-medium text-gray-600 dark:text-gray-400">Weight:</span>
                       <span>{product.productName} lbs</span>
                     </div>
                   </div>
