@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { Search, Download, FileText, Package, Loader2, AlertCircle } from 'lucide-react';
 import { Product } from '../../../types/product';
 import AppLayout from '@/components/layout/AppLayout';
+import { formatProductData, FormattedProduct } from '../../../lib/product-formatter';
 
 // Function to search for a product by SKU
 const searchProductBySKU = async (sku: string): Promise<Product | null> => {
@@ -25,7 +26,7 @@ export default function SpecSheetGenerator() {
   
   const [skuInput, setSkuInput] = useState('');
   const [isSearching, setIsSearching] = useState(false);
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<FormattedProduct | null>(null);
   const [error, setError] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -51,7 +52,8 @@ export default function SpecSheetGenerator() {
     try {
       const foundProduct = await searchProductBySKU(skuInput.trim());
       if (foundProduct) {
-        setProduct(foundProduct);
+        const formattedProduct = formatProductData(foundProduct);
+        setProduct(formattedProduct);
       } else {
         setError('Product not found. Please check the SKU and try again.');
       }
@@ -88,7 +90,8 @@ export default function SpecSheetGenerator() {
     setIsGenerating(false);
   };
 
-  const generateSpecSheetHTML = (product: Product): string => {
+  const generateSpecSheetHTML = (product: FormattedProduct): string => {
+    const specs = product.specifications;
     return `
 <!DOCTYPE html>
 <html>
@@ -111,93 +114,98 @@ export default function SpecSheetGenerator() {
 </head>
 <body>
     <div class="header">
-        <div class="product-title">${product.product_description || product.type}</div>
+        <div class="product-title">${product.productName}</div>
         <div class="sku">SKU: ${product.sku}</div>
-        <div style="margin-top: 10px; color: #666;">Family: ${product.family} | Series: ${product.series}</div>
+        ${product.images && product.images.length > 0 ? `<div style="margin-top: 20px;"><img src="${product.images[0]}" alt="Product Image" style="max-width: 200px; height: auto;"></div>` : ''}
     </div>
 
+    ${product.standardFeatures && product.standardFeatures.length > 0 ? `
     <div class="section">
-        <div class="section-title">Product Overview</div>
-        <div class="spec-grid">
-            <div class="spec-item"><span class="spec-label">Description:</span><span>${product.product_description}</span></div>
-            <div class="spec-item"><span class="spec-label">Type:</span><span>${product.type}</span></div>
-            <div class="spec-item"><span class="spec-label">Status:</span><span>${product.product_status}</span></div>
-            <div class="spec-item"><span class="spec-label">Country of Origin:</span><span>${product.country_of_origin}</span></div>
-        </div>
+        <div class="section-title">Standard Features</div>
+        <ul>
+            ${product.standardFeatures.map(feature => `<li>${feature}</li>`).join('')}
+        </ul>
     </div>
+    ` : ''}
 
+    ${Object.keys(specs.dimensionsAndWeight).length > 0 ? `
     <div class="section">
         <div class="section-title">Dimensions & Weight</div>
         <div class="spec-grid">
-            <div class="spec-item"><span class="spec-label">Length:</span><span>${product.product_length_in}"</span></div>
-            <div class="spec-item"><span class="spec-label">Width:</span><span>${product.product_width_in}"</span></div>
-            <div class="spec-item"><span class="spec-label">Height:</span><span>${product.product_height_in}"</span></div>
-            <div class="spec-item"><span class="spec-label">Depth:</span><span>${product.product_depth_in}"</span></div>
-            <div class="spec-item"><span class="spec-label">Weight:</span><span>${product.product_weight_lbs} lbs</span></div>
-            <div class="spec-item"><span class="spec-label">Shipping Weight:</span><span>${product.shipping_weight_lbs} lbs</span></div>
-            <div class="spec-item"><span class="spec-label">Shipping Dimensions:</span><span>${product.shipping_dimensions}</span></div>
+            ${specs.dimensionsAndWeight.length ? `<div class="spec-item"><span class="spec-label">Length:</span><span>${specs.dimensionsAndWeight.length}"</span></div>` : ''}
+            ${specs.dimensionsAndWeight.width ? `<div class="spec-item"><span class="spec-label">Width:</span><span>${specs.dimensionsAndWeight.width}"</span></div>` : ''}
+            ${specs.dimensionsAndWeight.height ? `<div class="spec-item"><span class="spec-label">Height:</span><span>${specs.dimensionsAndWeight.height}"</span></div>` : ''}
+            ${specs.dimensionsAndWeight.depth ? `<div class="spec-item"><span class="spec-label">Depth:</span><span>${specs.dimensionsAndWeight.depth}"</span></div>` : ''}
+            ${specs.dimensionsAndWeight.productWeightLbs ? `<div class="spec-item"><span class="spec-label">Weight:</span><span>${specs.dimensionsAndWeight.productWeightLbs} lbs</span></div>` : ''}
+            ${specs.dimensionsAndWeight.shippingWeightLbs ? `<div class="spec-item"><span class="spec-label">Shipping Weight:</span><span>${specs.dimensionsAndWeight.shippingWeightLbs} lbs</span></div>` : ''}
+            ${specs.dimensionsAndWeight.shippingDimensions ? `<div class="spec-item"><span class="spec-label">Shipping Dimensions:</span><span>${specs.dimensionsAndWeight.shippingDimensions}</span></div>` : ''}
         </div>
     </div>
+    ` : ''}
 
+    ${Object.keys(specs.technicalSpecifications).length > 0 ? `
     <div class="section">
         <div class="section-title">Technical Specifications</div>
         <div class="spec-grid">
-            ${product.voltage ? `<div class="spec-item"><span class="spec-label">Voltage:</span><span>${product.voltage}</span></div>` : ''}
-            ${product.amps ? `<div class="spec-item"><span class="spec-label">Amperage:</span><span>${product.amps}</span></div>` : ''}
-            ${product.hp ? `<div class="spec-item"><span class="spec-label">Horsepower:</span><span>${product.hp}</span></div>` : ''}
-            ${product.hertz_hz ? `<div class="spec-item"><span class="spec-label">Frequency:</span><span>${product.hertz_hz} Hz</span></div>` : ''}
-            ${product.flow_rate_gpm ? `<div class="spec-item"><span class="spec-label">Flow Rate:</span><span>${product.flow_rate_gpm} GPM</span></div>` : ''}
-            ${product.operating_range ? `<div class="spec-item"><span class="spec-label">Operating Range:</span><span>${product.operating_range}</span></div>` : ''}
-            ${product.refrigerant ? `<div class="spec-item"><span class="spec-label">Refrigerant:</span><span>${product.refrigerant}</span></div>` : ''}
-            ${product.btuhr_k ? `<div class="spec-item"><span class="spec-label">BTU/HR:</span><span>${product.btuhr_k}K</span></div>` : ''}
+            ${specs.technicalSpecifications.voltage ? `<div class="spec-item"><span class="spec-label">Voltage:</span><span>${specs.technicalSpecifications.voltage}</span></div>` : ''}
+            ${specs.technicalSpecifications.amps ? `<div class="spec-item"><span class="spec-label">Amperage:</span><span>${specs.technicalSpecifications.amps}</span></div>` : ''}
+            ${specs.technicalSpecifications.hp ? `<div class="spec-item"><span class="spec-label">Horsepower:</span><span>${specs.technicalSpecifications.hp}</span></div>` : ''}
+            ${specs.technicalSpecifications.hertzHz ? `<div class="spec-item"><span class="spec-label">Frequency:</span><span>${specs.technicalSpecifications.hertzHz} Hz</span></div>` : ''}
+            ${specs.technicalSpecifications.flowRateGpm ? `<div class="spec-item"><span class="spec-label">Flow Rate:</span><span>${specs.technicalSpecifications.flowRateGpm} GPM</span></div>` : ''}
+            ${specs.technicalSpecifications.operatingRange ? `<div class="spec-item"><span class="spec-label">Operating Range:</span><span>${specs.technicalSpecifications.operatingRange}</span></div>` : ''}
+            ${specs.technicalSpecifications.refrigerant ? `<div class="spec-item"><span class="spec-label">Refrigerant:</span><span>${specs.technicalSpecifications.refrigerant}</span></div>` : ''}
+            ${specs.technicalSpecifications.btuhrK ? `<div class="spec-item"><span class="spec-label">BTU/HR:</span><span>${specs.technicalSpecifications.btuhrK}K</span></div>` : ''}
         </div>
     </div>
+    ` : ''}
 
+    ${Object.keys(specs.featuresAndConstruction).length > 0 ? `
     <div class="section">
         <div class="section-title">Features & Construction</div>
         <div class="spec-grid">
-            ${product.materials ? `<div class="spec-item"><span class="spec-label">Materials:</span><span>${product.materials}</span></div>` : ''}
-            ${product.finish ? `<div class="spec-item"><span class="spec-label">Finish:</span><span>${product.finish}</span></div>` : ''}
-            ${product.mounting_style ? `<div class="spec-item"><span class="spec-label">Mounting:</span><span>${product.mounting_style}</span></div>` : ''}
-            ${product.features ? `<div class="spec-item"><span class="spec-label">Features:</span><span>${product.features}</span></div>` : ''}
-            ${product.number_of_taps ? `<div class="spec-item"><span class="spec-label">Number of Taps:</span><span>${product.number_of_taps}</span></div>` : ''}
-            ${product.ice_capacity_lbs ? `<div class="spec-item"><span class="spec-label">Ice Capacity:</span><span>${product.ice_capacity_lbs} lbs</span></div>` : ''}
+            ${specs.featuresAndConstruction.materials ? `<div class="spec-item"><span class="spec-label">Materials:</span><span>${specs.featuresAndConstruction.materials}</span></div>` : ''}
+            ${specs.featuresAndConstruction.finish ? `<div class="spec-item"><span class="spec-label">Finish:</span><span>${specs.featuresAndConstruction.finish}</span></div>` : ''}
+            ${specs.featuresAndConstruction.mountingStyle ? `<div class="spec-item"><span class="spec-label">Mounting:</span><span>${specs.featuresAndConstruction.mountingStyle}</span></div>` : ''}
+            ${specs.featuresAndConstruction.features ? `<div class="spec-item"><span class="spec-label">Features:</span><span>${specs.featuresAndConstruction.features}</span></div>` : ''}
+            ${specs.featuresAndConstruction.numberOfTaps ? `<div class="spec-item"><span class="spec-label">Number of Taps:</span><span>${specs.featuresAndConstruction.numberOfTaps}</span></div>` : ''}
+            ${specs.featuresAndConstruction.iceCapacityLbs ? `<div class="spec-item"><span class="spec-label">Ice Capacity:</span><span>${specs.featuresAndConstruction.iceCapacityLbs} lbs</span></div>` : ''}
         </div>
     </div>
+    ` : ''}
 
+    ${product.compliance && product.compliance.length > 0 ? `
     <div class="section">
         <div class="section-title">Certifications</div>
         <div class="certifications">
-            ${product.nsf_certification ? `<span class="cert-badge">NSF: ${product.nsf_certification}</span>` : ''}
-            ${product.ul_certification ? `<span class="cert-badge">UL: ${product.ul_certification}</span>` : ''}
-            ${product.etl_certification ? `<span class="cert-badge">ETL: ${product.etl_certification}</span>` : ''}
-            ${product.csa_certification ? `<span class="cert-badge">CSA: ${product.csa_certification}</span>` : ''}
-            ${product.ada_compliance ? `<span class="cert-badge">ADA Compliant</span>` : ''}
-            ${product.massachusetts_listed_certification ? `<span class="cert-badge">MA Listed</span>` : ''}
-            ${product.cec_listed_certification ? `<span class="cert-badge">CEC Listed</span>` : ''}
+            ${product.compliance.map(cert => `<span class="cert-badge">${cert}</span>`).join('')}
         </div>
     </div>
+    ` : ''}
 
+    ${Object.keys(specs.pricingAndPackaging).length > 0 ? `
     <div class="section">
         <div class="section-title">Pricing & Packaging</div>
         <div class="spec-grid">
-            <div class="spec-item"><span class="spec-label">List Price:</span><span>$${product.list_price.toFixed(2)}</span></div>
-            <div class="spec-item"><span class="spec-label">MAP Price:</span><span>$${product.map_price.toFixed(2)}</span></div>
-            <div class="spec-item"><span class="spec-label">Case Quantity:</span><span>${product.case_quantity}</span></div>
-            <div class="spec-item"><span class="spec-label">Pallet Quantity:</span><span>${product.pallet_quantity}</span></div>
-            <div class="spec-item"><span class="spec-label">UPC:</span><span>${product.upc}</span></div>
-            <div class="spec-item"><span class="spec-label">HTS Code:</span><span>${product.hts_code}</span></div>
+            ${specs.pricingAndPackaging.listPrice !== undefined && specs.pricingAndPackaging.listPrice !== null ? `<div class="spec-item"><span class="spec-label">List Price:</span><span>$${specs.pricingAndPackaging.listPrice}</span></div>` : ''}
+            ${specs.pricingAndPackaging.mapPrice !== undefined && specs.pricingAndPackaging.mapPrice !== null ? `<div class="spec-item"><span class="spec-label">MAP Price:</span><span>$${specs.pricingAndPackaging.mapPrice}</span></div>` : ''}
+            ${specs.pricingAndPackaging.caseQuantity ? `<div class="spec-item"><span class="spec-label">Case Quantity:</span><span>${specs.pricingAndPackaging.caseQuantity}</span></div>` : ''}
+            ${specs.pricingAndPackaging.palletQuantity ? `<div class="spec-item"><span class="spec-label">Pallet Quantity:</span><span>${specs.pricingAndPackaging.palletQuantity}</span></div>` : ''}
+            ${specs.pricingAndPackaging.upc ? `<div class="spec-item"><span class="spec-label">UPC:</span><span>${specs.pricingAndPackaging.upc}</span></div>` : ''}
+            ${specs.pricingAndPackaging.htsCode ? `<div class="spec-item"><span class="spec-label">HTS Code:</span><span>${specs.pricingAndPackaging.htsCode}</span></div>` : ''}
         </div>
     </div>
+    ` : ''}
 
+    ${Object.keys(specs.warrantyAndSupport).length > 0 ? `
     <div class="section">
         <div class="section-title">Warranty & Support</div>
         <div class="spec-grid">
-            <div class="spec-item"><span class="spec-label">Warranty:</span><span>${product.warranty}</span></div>
-            ${product.parts_and_accessories ? `<div class="spec-item"><span class="spec-label">Parts & Accessories:</span><span>${product.parts_and_accessories}</span></div>` : ''}
-            ${product.related_products ? `<div class="spec-item"><span class="spec-label">Related Products:</span><span>${product.related_products}</span></div>` : ''}
+            ${specs.warrantyAndSupport.warranty ? `<div class="spec-item"><span class="spec-label">Warranty:</span><span>${specs.warrantyAndSupport.warranty}</span></div>` : ''}
+            ${specs.warrantyAndSupport.partsAndAccessories ? `<div class="spec-item"><span class="spec-label">Parts & Accessories:</span><span>${specs.warrantyAndSupport.partsAndAccessories}</span></div>` : ''}
+            ${specs.warrantyAndSupport.relatedProducts ? `<div class="spec-item"><span class="spec-label">Related Products:</span><span>${specs.warrantyAndSupport.relatedProducts}</span></div>` : ''}
         </div>
     </div>
+    ` : ''}
 
     <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ccc; font-size: 12px; color: #666;">
         Generated on ${new Date().toLocaleDateString()} | SKU: ${product.sku}
@@ -319,20 +327,20 @@ export default function SpecSheetGenerator() {
                     </div>
                     <div className="flex justify-between py-2 border-b border-gray-100">
                       <span className="font-medium text-gray-600">Family:</span>
-                      <span>{product.family}</span>
+                      <span>{product.specifications.dimensionsAndWeight.length}</span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-gray-100">
                       <span className="font-medium text-gray-600">Type:</span>
-                      <span>{product.type}</span>
+                      <span>{product.specifications.dimensionsAndWeight.width}</span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-gray-100">
                       <span className="font-medium text-gray-600">Series:</span>
-                      <span>{product.series}</span>
+                      <span>{product.specifications.dimensionsAndWeight.height}</span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-gray-100">
                     <span className="font-medium text-gray-600">Status:</span>
                       <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-800 text-sm">
-                        {product.product_status}
+                        {product.specifications.dimensionsAndWeight.depth}
                       </span>
                     </div>
                   </div>
@@ -344,19 +352,19 @@ export default function SpecSheetGenerator() {
                   <div className="space-y-3">
                     <div className="flex justify-between py-2 border-b border-gray-100">
                       <span className="font-medium text-gray-600">Length:</span>
-                      <span>{product.product_length_in}"</span>
+                      <span>{product.specifications.dimensionsAndWeight.productWeightLbs}"</span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-gray-100">
                       <span className="font-medium text-gray-600">Width:</span>
-                      <span>{product.product_width_in}"</span>
+                      <span>{product.specifications.dimensionsAndWeight.shippingWeightLbs}"</span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-gray-100">
                       <span className="font-medium text-gray-600">Height:</span>
-                      <span>{product.product_height_in}"</span>
+                      <span>{product.specifications.dimensionsAndWeight.shippingDimensions}"</span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-gray-100">
                       <span className="font-medium text-gray-600">Weight:</span>
-                      <span>{product.product_weight_lbs} lbs</span>
+                      <span>{product.productName} lbs</span>
                     </div>
                   </div>
                 </div>
