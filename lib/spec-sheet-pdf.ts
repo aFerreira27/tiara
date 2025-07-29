@@ -1,23 +1,18 @@
 import { formatProductData, FormattedProduct } from './product-formatter';
 import pdfMake from 'pdfmake/build/pdfmake';
-import vfsFonts from '../vfs_fonts'; // your generated file
+import vfsFonts from '../vfs_fonts';
 
-// Assign the generated vfs_fonts to pdfMake
 pdfMake.vfs = vfsFonts;
 
 // Register your fonts with the actual font file names you have in vfs_fonts.js
-pdfMake.fonts = {
+pdfMake.addFonts({
   HelveticaNeue: {
     normal: 'HelveticaNeueLTStd-Roman.otf',
     bold: 'HelveticaNeueLTStd-Bd.otf',
-    italics: 'HelveticaNeueLTStd-It.otf', // if you have it; else omit
-    bolditalics: 'HelveticaNeueLTStd-BdIt.otf', // if you have it; else omit
-  },
-  MinionPro: {
-    normal: 'MinionPro-Regular.otf',
-  },
-  // add more fonts if needed
-};
+    italics: 'HelveticaNeueLTStd-Lt.otf',        // Optional
+    bolditalics: 'HelveticaNeueLTStd-BdCn.otf'   // Optional
+  }
+});
 
 export const generateSpecSheetPDF = (product: FormattedProduct) => {
   const specs = product.specifications;

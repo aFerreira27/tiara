@@ -7,4 +7,9 @@ declare module '../vfs_fonts' {
   export default vfsFonts;
 }
 
+declare module 'pdfmake/build/pdfmake' {
+  const pdfMake: any;
+  export default pdfMake;
+}
+
 export {};

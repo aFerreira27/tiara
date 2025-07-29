@@ -99,8 +99,7 @@ export default function SpecSheetGenerator() {
     setIsGeneratingPDF(true);
 
     try {
-      const docDefinition = generateSpecSheetPDF(product);
-      pdfMake.createPdf(docDefinition).download(`spec-sheet-${product.sku}.pdf`);
+      generateSpecSheetPDF(product);
     } catch (pdfError) {
       console.error('Error generating PDF:', pdfError);
       setError('Error generating PDF spec sheet. Please try again.');
