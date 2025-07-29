@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight, Download } from 'lucide-react';
 import { Product } from '../../../types/product'; // Import the Product interface
+import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css'; // Import carousel styles
 
 interface ProductDetailProps {
   productData: Product;
@@ -18,24 +20,35 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ productData }) => {
     window.open(url, '_blank');
   };
 
-  // Assuming tags are comma-separated strings
-  const tagsArray = product.tags ? product.tags.split(',').map(tag => tag.trim()) : [];
+  // Use product.tags directly as it is now an array
+  const tagsArray = product.tags || [];
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <div className="flex flex-col md:flex-row gap-6">
         {/* Image Gallery */}
         <div className="w-full md:w-1/2 relative">
-          {product.images ? (
-            <Image
-              src={product.images}
-              alt={'Product Image'} // Use a generic alt text
-              width={400}
-              height={300}
-              layout="responsive"
-              objectFit="contain"
-              className="rounded-md"
-            />
+          {product.images && product.images.length > 0 ? (
+            <Carousel
+              showArrows={true}
+              showThumbs={true}
+              infiniteLoop={true}
+              dynamicHeight={false}
+              className="product-carousel"
+            >
+              {product.images.map((image, index) => (
+                <div key={index}>
+                  <Image
+                    src={image}
+                    alt={`Product Image ${index + 1}`} // More descriptive alt text
+                    width={600} // Adjust size as needed
+                    height={400} // Adjust size as needed
+                    layout="responsive"
+                    objectFit="contain"
+                  />
+                </div>
+              ))}
+            </Carousel>
           ) : (
             <div className="flex items-center justify-center h-64 bg-gray-200 rounded-md text-gray-500">
               No image available
@@ -99,22 +112,26 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ productData }) => {
           <div>
             <h3 className="text-lg font-semibold mb-2">Downloads</h3>
             <div className="flex flex-col space-y-2">
-              {/* Assuming 'downloads' is an array in your Product type */}
-              {/* You would need to map through the actual download fields from your schema */} 
-              {/* For example, if you have 'spec_sheet', 'manuals', 'sell_sheet', 'brochure' fields */}
-              {product.spec_sheet && (
-                <button
-                  className="flex items-center text-blue-500 hover:underline"
-                  onClick={() => handleDownloadClick(product.spec_sheet!)}
-                >
-                  <Download size={18} className="mr-2" />
-                  Specification Sheet
-                </button>
+              {/* Handle spec_sheet as an array */}
+              {product.spec_sheet && product.spec_sheet.length > 0 ? (
+                product.spec_sheet.map((sheet, index) => (
+                  <button
+                    key={index}
+                    className="flex items-center text-blue-500 hover:underline"
+                    onClick={() => handleDownloadClick(sheet)}
+                  >
+                    <Download size={18} className="mr-2" />
+                    Specification Sheet {index + 1}
+                  </button>
+                ))
+              ) : (
+                <p className="text-gray-500">No specification sheets available.</p>
               )}
+
               {product.manuals && (
                 <button
                   className="flex items-center text-blue-500 hover:underline"
-                  onClick={() => handleDownloadClick(product.manuals!)}
+                  onClick={() => handleDownloadClick(product.manuals)}
                 >
                   <Download size={18} className="mr-2" />
                   Manual
@@ -123,7 +140,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ productData }) => {
               {product.sell_sheet && (
                 <button
                   className="flex items-center text-blue-500 hover:underline"
-                  onClick={() => handleDownloadClick(product.sell_sheet!)}
+                  onClick={() => handleDownloadClick(product.sell_sheet)}
                 >
                   <Download size={18} className="mr-2" />
                   Sell Sheet
@@ -132,16 +149,15 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ productData }) => {
               {product.brochure && (
                 <button
                   className="flex items-center text-blue-500 hover:underline"
-                  onClick={() => handleDownloadClick(product.brochure!)}
+                  onClick={() => handleDownloadClick(product.brochure)}
                 >
                 <Download size={18} className="mr-2" />
                   Brochure
                 </button>
               )}
-              {/* Add similar blocks for other downloadable files */} 
-              {!product.spec_sheet && !product.manuals && !product.sell_sheet && !product.brochure && (
-                <p className="text-gray-500">No downloads available.</p>
-              )}
+              {/* Add similar blocks for other downloadable files that are strings */}
+              {/* You might want to add a check here to see if ANY download links exist */}
+              {/* This check is more complex now with arrays, you might need a state or a combined check */}
             </div>
           </div>
         </div>

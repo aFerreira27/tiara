@@ -8,18 +8,22 @@ const pool = new Pool({
   user: "Tiara Admin",
   password: process.env.TIARAADMINPASS,
   database: "prodinfo",
-  host: "tiara-269e6:us-central1:tiarasql",
+  host: "127.0.0.1", // Changed to connect via Cloud SQL Proxy
+  port: 5432, // Ensure this matches the proxy port
 });
 
+// Updated type to include string[] for PostgreSQL arrays
+type QueryParam = string | number | boolean | null | string[];
+
 const db = {
-  query: (text: string, params?: (string | number | boolean | null)[]) => pool.query(text, params),
+  query: (text: string, params?: QueryParam[]) => pool.query(text, params),
 };
 
 // Function to add a new product
 export async function addProduct(productData: Product): Promise<Product> {
-  const { sku, product_description, /* ... other product properties */ } = productData;
-  const sql = `INSERT INTO product_data (sku, product_description, /* ... other columns */) VALUES ($1, $2, /* ... other values */) RETURNING *`;
-  const params: (string | number | boolean | null)[] = [sku, product_description /* ... other values */];
+  const { sku, product_description, tags, /* ... other product properties */ } = productData;
+  const sql = `INSERT INTO product_data (sku, product_description, tags, /* ... other columns */) VALUES ($1, $2, $3, /* ... other values */) RETURNING *`;
+  const params: QueryParam[] = [sku, product_description, tags ?? null /* ... other values */];
   try {
     const result = await db.query(sql, params);
     return result.rows[0];
@@ -32,7 +36,7 @@ export async function addProduct(productData: Product): Promise<Product> {
 // Function to delete a product by SKU
 export async function deleteProduct(sku: string): Promise<Product> {
   const sql = `DELETE FROM product_data WHERE sku = $1 RETURNING *`;
-  const params = [sku];
+  const params: QueryParam[] = [sku];
   try {
     const result = await db.query(sql, params);
     return result.rows[0];
@@ -44,12 +48,18 @@ export async function deleteProduct(sku: string): Promise<Product> {
 
 // Function to edit an existing product by SKU
 export async function editProduct(sku: string, productData: Partial<Product>): Promise<Product> {
-  const { product_description, /* ... other product properties to update */ } = productData;
+  const { product_description, tags, /* ... other product properties to update */ } = productData;
 
   // Handle undefined values by converting them to null or filtering them out
-  const sql = `UPDATE product_data SET product_description = $1 /* ... other column = $X */ WHERE sku = $2 RETURNING *`;
-  const params: (string | number | boolean | null)[] = [
+  const sql = `UPDATE product_data SET 
+    product_description = $1,
+    tags = $2
+    /* ... other column = $X */ 
+    WHERE sku = $3 RETURNING *`;
+    
+  const params: QueryParam[] = [
     product_description ?? null, // Convert undefined to null
+    tags ?? null, // PostgreSQL will handle the array conversion automatically
     sku
     /* ... other values, converting undefined to null as needed */
   ];
@@ -66,7 +76,7 @@ export async function editProduct(sku: string, productData: Partial<Product>): P
 // Function to get product(s)
 export async function getProducts(sku?: string): Promise<Product[]> {
   let sql = `SELECT * FROM product_data`;
-  const params: (string | number | boolean | null)[] = [];
+  const params: QueryParam[] = [];
 
   if (sku) {
     sql += ` WHERE sku = $1`;
@@ -75,10 +85,16 @@ export async function getProducts(sku?: string): Promise<Product[]> {
 
   try {
     const result = await db.query(sql, params);
-    return result.rows;
+    const products: Product[] = result.rows.map((row: any) => ({
+      ...row,
+      // Handle images as array directly since it's now text[] type
+      images: row.images && Array.isArray(row.images) ? row.images : null,
+      // Handle tags as array directly since it's text[] type
+      tags: row.tags && Array.isArray(row.tags) ? row.tags : null,
+    }));
+    return products;
   } catch (error) {
     console.error('Error getting products:', error);
-    // Log the specific error object
     console.error(error);
     throw error;
   }

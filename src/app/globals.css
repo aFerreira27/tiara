@@ -1,35 +1,55 @@
 @import "tailwindcss";
 
 :root {
+  /* Define the core color palette */
+  --color-black: #000000;
+  --color-light-gray: #cdd1d1;
+  --color-sky-blue: #2fede1;
+
+  /* Define shades of gray based on the light gray */
+  --color-gray-50: #f7fafa; /* Very light gray */
+  --color-gray-100: #e9eded; /* Lighter gray */
+  --color-gray-200: #cdd1d1; /* Your light gray */
+  --color-gray-300: #b1b6b6;
+  --color-gray-400: #959a9b;
+  --color-gray-500: #7a7f7f;
+  --color-gray-600: #626666;
+  --color-gray-700: #4a4d4d;
+  --color-gray-800: #333535;
+  --color-gray-900: #1b1d1d;
+
+  /* Define variations of sky blue */
+  --color-sky-blue-dark: #27c0b5; /* Slightly darker for hover */
+
   /* Light theme colors */
-  --background: #ffffff;
-  --background-secondary: #f8fafc;
-  --background-tertiary: #f1f5f9;
-  --foreground: #1e293b;
-  --foreground-secondary: #475569;
-  --foreground-muted: #64748b;
-  
+  --background: var(--color-gray-50);
+  --background-secondary: var(--color-gray-100);
+  --background-tertiary: var(--color-gray-200);
+  --foreground: var(--color-black);
+  --foreground-secondary: var(--color-gray-700);
+  --foreground-muted: var(--color-gray-500);
+
   /* Brand colors */
-  --primary: #0f172a;
-  --primary-hover: #334155;
-  --secondary: #3b82f6;
-  --secondary-hover: #2563eb;
-  
-  /* Semantic colors */
+  --primary: var(--color-sky-blue);
+  --primary-hover: var(--color-sky-blue-dark);
+  --secondary: var(--color-sky-blue);
+  --secondary-hover: var(--color-sky-blue-dark);
+
+  /* Semantic colors (keeping original for now, can be adjusted later) */
   --success: #10b981;
   --success-hover: #059669;
   --warning: #f59e0b;
   --warning-hover: #d97706;
   --error: #ef4444;
   --error-hover: #dc2626;
-  
+
   /* UI colors */
-  --border: #e2e8f0;
-  --border-light: #f1f5f9;
+  --border: var(--color-gray-300);
+  --border-light: var(--color-gray-100);
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  
+
   /* Radius */
   --radius-sm: 0.375rem;
   --radius: 0.5rem;
@@ -40,30 +60,30 @@
 @media (prefers-color-scheme: dark) {
   :root {
     /* Dark theme colors */
-    --background: #0f172a;
-    --background-secondary: #1e293b;
-    --background-tertiary: #334155;
-    --foreground: #f8fafc;
-    --foreground-secondary: #cbd5e1;
-    --foreground-muted: #94a3b8;
-    
+    --background: var(--color-black);
+    --background-secondary: var(--color-gray-900);
+    --background-tertiary: var(--color-gray-800);
+    --foreground: var(--color-light-gray);
+    --foreground-secondary: var(--color-gray-400);
+    --foreground-muted: var(--color-gray-600);
+
     /* Brand colors for dark mode */
-    --primary: #f8fafc;
-    --primary-hover: #e2e8f0;
-    --secondary: #3b82f6;
-    --secondary-hover: #60a5fa;
-    
-    /* Semantic colors for dark mode */
+    --primary: var(--color-sky-blue);
+    --primary-hover: var(--color-sky-blue-dark);
+    --secondary: var(--color-sky-blue);
+    --secondary-hover: var(--color-sky-blue-dark);
+
+    /* Semantic colors for dark mode (keeping original for now) */
     --success: #10b981;
     --success-hover: #34d399;
     --warning: #f59e0b;
     --warning-hover: #fbbf24;
     --error: #ef4444;
     --error-hover: #f87171;
-    
+
     /* UI colors for dark mode */
-    --border: #334155;
-    --border-light: #475569;
+    --border: var(--color-gray-700);
+    --border-light: var(--color-gray-900);
     --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
@@ -189,7 +209,7 @@ button:disabled {
 /* Secondary button variant */
 button.btn-secondary {
   background-color: var(--secondary);
-  color: white;
+  color: white; /* Adjust based on new background color */
 }
 
 button.btn-secondary:hover {
@@ -211,7 +231,7 @@ button.btn-outline:hover {
 /* Destructive button variant */
 button.btn-destructive {
   background-color: var(--error);
-  color: white;
+  color: white; /* Adjust based on new background color */
 }
 
 button.btn-destructive:hover {
@@ -281,8 +301,8 @@ button.btn-destructive:hover {
 
 /* Selection styling */
 ::selection {
-  background-color: rgb(59 130 246 / 0.2);
-  color: var(--foreground);
+  background-color: var(--primary);
+  color: var(--background);
 }
 
 /* Smooth transitions for theme switching */
@@ -297,11 +317,11 @@ button.btn-destructive:hover {
     color: black !important;
     box-shadow: none !important;
   }
-  
+
   a, a:visited {
     text-decoration: underline;
   }
-  
+
   @page {
     margin: 0.5in;
   }

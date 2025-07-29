@@ -62,7 +62,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100 w-64 p-4">
+    <div className="flex flex-col h-screen bg-gray-800 text-white w-64 p-4"> {/* Changed background to gray-800 */}
       <SidebarLogo />
       <SidebarNavigation />
       <div className="mt-auto">

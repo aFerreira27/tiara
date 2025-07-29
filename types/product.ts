@@ -1,6 +1,3 @@
-// types/product.ts
-
-// Define a Product interface based on your database columns
 export interface Product {
   sku: string;
   family: string;
@@ -118,32 +115,32 @@ export interface Product {
   parent_products: string;
   parts_and_accessories: string;
   beverage_lines: string;
-  images: string | null;
-  videos: string | null;
-  spec_sheet: string | null;
-  manuals: string | null;
-  sell_sheet: string | null;
-  brochure: string | null;
-  backsplash_height_in: number | null;
-  bowl_size_in: string | null;
-  perforated_inserts: string | null;
-  related_products: string | null;
-  includes: string | null;
-  amps: string | null;
-  compressor_size_in: string | null;
-  phase: string | null;
-  partsbykrowne: string | null;
-  load_capacity_lbs_per_caster: string | null;
-  plate_size_in: string | null;
-  caster_overall_height_in: string | null;
-  keg_capacity: string | null;
-  product_weight: string | null;
-  drain_outlet: string | null;
-  product_width_in: number | null;
-  california_prop_warning: string | null;
-  website_link: string | null;
-  product_height_without_legs_in: string | null;
-  internal_only_product: string | null;
-  coo: string | null;
-  tags: string | null;
+  images?: string[] | null;
+  videos: string[] | null;
+  spec_sheet: string[] | null;
+  manuals: string;
+  sell_sheet: string;
+  brochure: string;
+  backsplash_height_in: number;
+  bowl_size_in: string;
+  perforated_inserts: string;
+  related_products: string;
+  includes: string;
+  amps: string;
+  compressor_size_in: string;
+  phase: string;
+  partsbykrowne: string;
+  load_capacity_lbs_per_caster: string;
+  plate_size_in: string;
+  caster_overall_height_in: string;
+  keg_capacity: string;
+  product_weight: string;
+  drain_outlet: string;
+  product_width_in: number;
+  california_prop_warning: string;
+  website_link: string;
+  product_height_without_legs_in: string;
+  internal_only_product: string;
+  coo: string;
+  tags?: string[] | null;
 }

@@ -1,3 +1,5 @@
+'use client';
+
 import { Session } from "next-auth";
 import Image from "next/image";
 
@@ -18,7 +20,7 @@ export default function SidebarUser({
     <div className="flex items-center space-x-3 cursor-pointer" onClick={onOpenPopover}>
       <Image
         className="h-8 w-8 rounded-full"
-        src={session.user?.image || '/default-avatar.png'} // Use a default image if none is provided
+        src={session.user?.image || '/pfpDefault.png'} // Use the correct default image filename
         alt="User avatar"
         width={32}
         height={32}

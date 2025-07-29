@@ -35,7 +35,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <Sidebar />
       
       {/* Main content area */}
-      <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900 pt-16 pl-64">
+      <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900 pt-16 pl-8 pr-8">
         {children}
       </main>
     </div>

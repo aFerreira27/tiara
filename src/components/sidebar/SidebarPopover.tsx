@@ -29,7 +29,9 @@ const SidebarPopover: React.FC<SidebarPopoverProps> = ({
       style={{
         top: `${position.top}px`,
         left: `${position.left}px`,
-        transform: 'translateY(-100%)' // Position above the button
+        transform: 'translate(-100%, -110%)', // Center horizontally and position above
+        marginLeft: 'auto', // Add auto margins for centering if needed
+        marginRight: 'auto',
       }}
     >
       <div className="px-1 space-y-1">
@@ -76,15 +78,17 @@ const SidebarPopover: React.FC<SidebarPopoverProps> = ({
 
       <div className="my-2 h-px bg-gray-200 dark:bg-gray-600 mx-2"></div>
 
-      <button
-        onClick={() => signOut({ callbackUrl: window.location.origin })}
-        className="relative flex cursor-pointer select-none items-center gap-3 rounded-md px-3 py-2.5 text-sm outline-none transition-colors hover:bg-red-50 dark:hover:bg-red-900/20 w-full text-left text-red-600 dark:text-red-400 font-medium"
-      >
-        <div className="text-red-500 dark:text-red-400">
-          <LogOutIcon className="w-4 h-4" />
-        </div>
-        <span>Logout</span>
-      </button>
+      <div className="px-1 space-y-1">
+        <button
+          onClick={() => signOut({ callbackUrl: window.location.origin })}
+          className="relative flex cursor-pointer select-none items-center gap-3 rounded-md px-3 py-2.5 text-sm outline-none transition-colors w-full text-left font-medium btn-destructive"
+        >
+          <div className="text-white">
+            <LogOutIcon className="w-4 h-4" />
+          </div>
+          <span>Logout</span>
+        </button>
+      </div>
 
     </div>
   );
