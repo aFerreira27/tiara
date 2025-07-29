@@ -31,7 +31,9 @@ export default function ProductCard({
       <div className="flex flex-wrap gap-2">
         {/* Example Tags - replace with actual product.tags mapping */}
         <span className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs font-medium">{product.sku}</span>
-        <span className="px-2 py-1 bg-gray-500 text-gray-700 rounded-full text-xs font-medium">{product.series}</span>
+        {product.series && (
+          <span className="px-2 py-1 bg-gray-500 text-gray-700 rounded-full text-xs font-medium">{product.series}</span>
+        )}
         {product.tags && product.tags.map(tag => (
           <span key={tag} className="px-2 py-1 bg-blue-200 text-blue-700 rounded-full text-xs font-medium">{tag}</span>
         ))}
