@@ -50,19 +50,28 @@ export async function deleteProduct(sku: string): Promise<Product> {
 export async function editProduct(sku: string, productData: Partial<Product>): Promise<Product> {
   const { product_description, tags, /* ... other product properties to update */ } = productData;
 
-  // Handle undefined values by converting them to null or filtering them out
-  const sql = `UPDATE product_data SET 
-    product_description = $1,
-    tags = $2
-    /* ... other column = $X */ 
-    WHERE sku = $3 RETURNING *`;
-    
-  const params: QueryParam[] = [
-    product_description ?? null, // Convert undefined to null
-    tags ?? null, // PostgreSQL will handle the array conversion automatically
-    sku
-    /* ... other values, converting undefined to null as needed */
-  ];
+  let sql = `UPDATE product_data SET 
+`;
+  const updates: string[] = [];
+  const params: QueryParam[] = [];
+  let paramIndex = 1;
+
+  if (product_description !== undefined) {
+    updates.push(`product_description = $${paramIndex++}`);
+    params.push(product_description ?? null);
+  }
+
+  if (tags !== undefined) {
+    updates.push(`tags = $${paramIndex++}`);
+    params.push(tags ?? null);
+  }
+
+  // Add other fields to update similarly
+  // if (otherField !== undefined) { updates.push(`other_field = $${paramIndex++}`); params.push(otherField); }
+
+  sql += updates.join(', ');
+  sql += ` WHERE sku = $${paramIndex++} RETURNING *`;
+  params.push(sku);
 
   try {
     const result = await db.query(sql, params);

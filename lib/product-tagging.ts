@@ -89,8 +89,8 @@ function analyzeProductForTags(product: Product): string[] {
   const searchText = [
     product.product_description,
     product.sku,
-    // Add other relevant fields you want to analyze
-    // product.title, product.category, etc.
+    product.family,
+    product.features,
   ]
     .filter(Boolean)
     .join(' ')
