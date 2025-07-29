@@ -389,19 +389,19 @@ export default function SpecSheetGenerator() {
                   <div className="space-y-3">
                     <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
                       <span className="font-medium text-gray-600 dark:text-gray-400">Length:</span>
-                      <span>{product.specifications.dimensionsAndWeight.productWeightLbs}"</span>
+                      <span>{product.specifications.dimensionsAndWeight.productWeightLbs}&quot;</span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
                       <span className="font-medium text-gray-600 dark:text-gray-400">Width:</span>
-                      <span>{product.specifications.dimensionsAndWeight.shippingWeightLbs}"</span>
+                      <span>{product.specifications.dimensionsAndWeight.shippingWeightLbs}&quot;</span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
                       <span className="font-medium text-gray-600 dark:text-gray-400">Height:</span>
-                      <span>{product.specifications.dimensionsAndWeight.shippingDimensions}"</span>
+                      <span>{product.specifications.dimensionsAndWeight.shippingDimensions}&quot;</span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
                       <span className="font-medium text-gray-600 dark:text-gray-400">Weight:</span>
-                      <span>{product.productName} lbs</span>
+                      <span>{product.specifications.dimensionsAndWeight.productWeightLbs} lbs</span>
                     </div>
                   </div>
                 </div>

@@ -1,52 +1,72 @@
-import { notFound, useRouter } from 'next/navigation'; // Import useRouter
+'use client';
+
+import { useState, useEffect } from 'react';
+import { notFound, useParams } from 'next/navigation';
 import AppLayout from '@/components/layout/AppLayout';
-import ProductDetail from '@/components/krownebase/ProductDetail';
+import ProductDetailComponent from '@/components/krownebase/ProductDetail';
 import { Product } from '../../../../types/product';
 
-interface ProductDetailPageProps {
-  params: { sku: string };
-}
+export default function ProductDetailPage() {
+  const params = useParams();
+  const sku = params.sku as string;
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-const ProductDetailPage = async ({
-  params,
-}: ProductDetailPageProps) => {
-  const { sku } = params;
-  const router = useRouter(); // Initialize useRouter
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/products/${sku}`);
+        
+        if (!response.ok) {
+          if (response.status === 404) {
+            notFound();
+          }
+          throw new Error(`Failed to fetch product: ${response.statusText}`);
+        }
 
-  // In a real application, you would fetch product data from a database
-  // based on the SKU. Here, we'll use a placeholder.
+        const productData: Product = await response.json();
+        setProduct(productData);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Placeholder data - replace with your actual data fetching logic
-  const products: Product[] = [
-    // Your product data here (e.g., fetched from an API or database)
-    // Example:
-    // { sku: 'SKU123', name: 'Product 1', description: 'Description 1' },
-    // { sku: 'SKU456', name: 'Product 2', description: 'Description 2' },
-  ];
+    if (sku) {
+      fetchProduct();
+    }
+  }, [sku]);
 
-  // Filter products to find the one with the matching SKU
-  const productData = products.filter(p => p.sku === sku);
+  if (loading) {
+    return (
+      <AppLayout>
+        <div className="flex justify-center items-center h-64">
+          <div className="text-lg">Loading...</div>
+        </div>
+      </AppLayout>
+    );
+  }
 
-  // If product not found (array is empty), show 404 page
-  if (!products || products.length === 0) {
+  if (error) {
+    return (
+      <AppLayout>
+        <div className="flex justify-center items-center h-64">
+          <div className="text-red-600">Error: {error}</div>
+        </div>
+      </AppLayout>
+    );
+  }
+
+  if (!product) {
     notFound();
   }
 
-  // Get the first product from the returned array
-  const product = products[0];
-
-  // Define the onClose function to navigate back
-  const handleCloseDetail = () => {
-    router.back(); // Navigate back to the previous page
-  };
-
   return (
     <AppLayout>
-      <div>
-        <ProductDetail product={product} onClose={handleCloseDetail} /> {/* Pass the onClose prop */}
-      </div>
+      <ProductDetailComponent product={product} />
     </AppLayout>
   );
-};
-
-export default ProductDetailPage;
+}

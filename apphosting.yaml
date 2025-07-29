@@ -1,22 +1,17 @@
 # Settings for Backend (on Cloud Run).
-# See https://firebase.google.com/docs/app-hosting/configure#cloud-run
 runConfig:
   minInstances: 0
-  # maxInstances: 100
-  # concurrency: 80
-  # cpu: 1
-  # memoryMiB: 512
-  sidecars:
-    - name: cloudsql-proxy
-      image: gcr.io/cloud-sql-connectors/cloud-sql-proxy
-      command: ["/cloud-sql-proxy"]
-      args:
-        - "tiara-269e6:us-central1:tiarasql"
-        - "--port=5432"
-# Environment variables and secrets.
+  # Remove the sidecars section entirely
+  environmentVariables:
+    DB_USER: "Tiara Admin"
+    DB_NAME: prodinfo
+    INSTANCE_CONNECTION_NAME: tiara-269e6:us-central1:tiarasql
+  
+  cloudSqlConnections:
+    - connectionName: tiara-269e6:us-central1:tiarasql
+
+# Rest of your env section stays the same...
 env:
-  # Configure environment variables.
-  # See https://firebase.google.com/docs/app-hosting/configure#user-defined-environment
   - variable: AZURE_AD_CLIENT_ID
     value: 8923bac2-27fb-45c1-990a-c7fb172ac4b9
     availability:
@@ -27,9 +22,6 @@ env:
     availability:
       - BUILD
       - RUNTIME
-
-  # Grant access to secrets in Cloud Secret Manager.
-  # See https://firebase.google.com/docs/app-hosting/configure#secret-parameters
   - variable: AZURE_AD_CLIENT_SECRET
     secret: azureAdClientSecret
   - variable: AZURE_AD_TENANT_ID

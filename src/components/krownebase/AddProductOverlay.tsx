@@ -2,7 +2,7 @@
 
 import { useState, Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { XMarkIcon, DocumentArrowUpIcon } from '@heroicons/react/24/outline';
+import { DocumentArrowUpIcon } from '@heroicons/react/24/outline';
 import AddProductForm from './AddProductForm';
 import { Product } from '../../../types/product'; // Import the Product type
 
@@ -52,9 +52,10 @@ export default function AddProductOverlay({ isOpen, onClose, onAddProduct }: Add
       // Optionally, refresh the product list after successful upload
       // This might involve calling a prop function passed from the parent component
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Upload failed:', error);
-      setUploadStatus({ loading: false, success: false, error: error.message });
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+      setUploadStatus({ loading: false, success: false, error: errorMessage });
     }
   };
 

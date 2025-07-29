@@ -1,16 +1,32 @@
-// lib/product-db.ts
-
 import { Pool } from 'pg';
 import { Product } from '../types/product';
 
-// Configure your database connection pool for Google Cloud PostgreSQL
-const pool = new Pool({
-  user: "Tiara Admin",
-  password: process.env.TIARAADMINPASS,
-  database: "prodinfo",
-  host: "127.0.0.1", // Changed to connect via Cloud SQL Proxy
-  port: 5432, // Ensure this matches the proxy port
-});
+// Detect environment
+const isProduction = process.env.NODE_ENV === 'production';
+
+let poolConfig;
+
+if (isProduction) {
+  // Firebase App Hosting - use Unix socket
+  poolConfig = {
+    user: process.env.DB_USER,
+    password: process.env.TIARAADMINPASS,
+    database: process.env.DB_NAME,
+    host: `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`,
+    // No port needed for Unix socket
+  };
+} else {
+  // Local development - use Cloud SQL Proxy
+  poolConfig = {
+    user: "Tiara Admin",
+    password: process.env.TIARAADMINPASS,
+    database: "prodinfo",
+    host: "127.0.0.1",
+    port: 5432,
+  };
+}
+
+const pool = new Pool(poolConfig);
 
 // Updated type to include string[] for PostgreSQL arrays
 type QueryParam = string | number | boolean | null | string[];
@@ -94,13 +110,13 @@ export async function getProducts(sku?: string): Promise<Product[]> {
 
   try {
     const result = await db.query(sql, params);
-    const products: Product[] = result.rows.map((row: any) => ({
+    const products: Product[] = result.rows.map((row: Record<string, unknown>) => ({
       ...row,
       // Handle images as array directly since it's now text[] type
       images: row.images && Array.isArray(row.images) ? row.images : null,
-      // Handle tags as array directly since it's text[] type
+      // Handle tags as array directly since it's now text[] type
       tags: row.tags && Array.isArray(row.tags) ? row.tags : null,
-    }));
+    })) as Product[];
     return products;
   } catch (error) {
     console.error('Error getting products:', error);
