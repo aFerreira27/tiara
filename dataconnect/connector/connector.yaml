@@ -1,3 +1,6 @@
+# connector.yaml
+
+
 connectorId: default
 generate:
   javascriptSdk:

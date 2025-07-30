@@ -1,0 +1,46 @@
+[debug] [2025-07-30T12:08:24.430Z] Checked if tokens are valid: false, expires at: 1753849583431
+[debug] [2025-07-30T12:08:24.435Z] Checked if tokens are valid: false, expires at: 1753849583431
+[debug] [2025-07-30T12:08:24.437Z] > refreshing access token with scopes: []
+[debug] [2025-07-30T12:08:24.447Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-07-30T12:08:24.448Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-07-30T12:08:24.603Z] Checked if tokens are valid: false, expires at: 1753849583431
+[debug] [2025-07-30T12:08:24.603Z] Checked if tokens are valid: false, expires at: 1753849583431
+[debug] [2025-07-30T12:08:24.604Z] > refreshing access token with scopes: []
+[debug] [2025-07-30T12:08:24.606Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-07-30T12:08:24.608Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-07-30T12:08:24.833Z] Checked if tokens are valid: false, expires at: 1753849583431
+[debug] [2025-07-30T12:08:24.836Z] Checked if tokens are valid: false, expires at: 1753849583431
+[debug] [2025-07-30T12:08:24.836Z] > refreshing access token with scopes: []
+[debug] [2025-07-30T12:08:24.837Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-07-30T12:08:24.845Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-07-30T12:08:24.873Z] Checked if tokens are valid: false, expires at: 1753849583431
+[debug] [2025-07-30T12:08:24.873Z] Checked if tokens are valid: false, expires at: 1753849583431
+[debug] [2025-07-30T12:08:24.873Z] > refreshing access token with scopes: []
+[debug] [2025-07-30T12:08:24.874Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-07-30T12:08:24.874Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-07-30T12:08:24.986Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2025-07-30T12:08:24.994Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-07-30T12:08:25.049Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/tiara-269e6/services/firebasecrashlytics.googleapis.com [none]
+[debug] [2025-07-30T12:08:25.049Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/tiara-269e6/services/firebasecrashlytics.googleapis.com x-goog-quota-user=projects/tiara-269e6
+[debug] [2025-07-30T12:08:25.085Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2025-07-30T12:08:25.085Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-07-30T12:08:25.108Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/tiara-269e6/services/firestore.googleapis.com [none]
+[debug] [2025-07-30T12:08:25.108Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/tiara-269e6/services/firestore.googleapis.com x-goog-quota-user=projects/tiara-269e6
+[debug] [2025-07-30T12:08:25.164Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2025-07-30T12:08:25.164Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-07-30T12:08:25.190Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/tiara-269e6/services/firebasecrashlytics.googleapis.com [none]
+[debug] [2025-07-30T12:08:25.191Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/tiara-269e6/services/firebasecrashlytics.googleapis.com x-goog-quota-user=projects/tiara-269e6
+[debug] [2025-07-30T12:08:25.200Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2025-07-30T12:08:25.201Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-07-30T12:08:25.221Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/tiara-269e6/services/firestore.googleapis.com [none]
+[debug] [2025-07-30T12:08:25.224Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/tiara-269e6/services/firestore.googleapis.com x-goog-quota-user=projects/tiara-269e6
+[debug] [2025-07-30T12:08:25.458Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/tiara-269e6/services/firestore.googleapis.com 200
+[debug] [2025-07-30T12:08:25.458Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/tiara-269e6/services/firestore.googleapis.com [omitted]
+[debug] [2025-07-30T12:08:25.545Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/tiara-269e6/services/firebasecrashlytics.googleapis.com 200
+[debug] [2025-07-30T12:08:25.545Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/tiara-269e6/services/firebasecrashlytics.googleapis.com [omitted]
+[debug] [2025-07-30T12:08:25.561Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/tiara-269e6/services/firebasecrashlytics.googleapis.com 200
+[debug] [2025-07-30T12:08:25.561Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/tiara-269e6/services/firebasecrashlytics.googleapis.com [omitted]
+[debug] [2025-07-30T12:08:25.594Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/tiara-269e6/services/firestore.googleapis.com 200
+[debug] [2025-07-30T12:08:25.594Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/tiara-269e6/services/firestore.googleapis.com [omitted]
+[debug] [2025-07-30T12:08:25.612Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-30T12:08:25.613Z] > authorizing via signed-in user (alex.n.ferreira.27@gmail.com)

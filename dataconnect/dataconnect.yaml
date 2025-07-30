@@ -1,3 +1,5 @@
+# dataconnect.yaml
+
 specVersion: "v1"
 serviceId: "tiara"
 location: "us-central1"
@@ -5,7 +7,7 @@ schema:
   source: "./schema"
   datasource:
     postgresql:
-      database: "productInfo"
+      database: "prodinfo"
       cloudSql:
         instanceId: "tiarasql"
       # schemaValidation: "COMPATIBLE"
