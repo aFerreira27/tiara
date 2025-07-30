@@ -17,3 +17,8 @@ The goal of this project is to create a PDF spec sheet generator for products, b
 3.  Modify the existing `generateSpecSheet` (or a new function if the user intends to keep both) to use the `generateSpecSheetPDF` function.
 4.  Ensure fonts are correctly embedded and referenced in the `pdfmake` document definition.
 5.  Begin structuring the `docDefinition` in `generateSpecSheetPDF` to include basic product information (name, SKU) and placeholders for future sections (Standard Features, Specifications, Product Compliance) based on the provided image.
+
+## Database Health Check Route
+
+*   **Feature:** Added a new API route `/api/db-health` to check the database connection status.
+*   **Implementation:** Created `src/app/api/db-health/route.ts` to handle the GET requests and utilize the `checkDatabaseHealth` function from `lib/product-db.ts`. The route returns a JSON response indicating the health status, including any error messages.
